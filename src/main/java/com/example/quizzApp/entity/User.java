@@ -1,5 +1,6 @@
 package com.example.quizzApp.entity;
 
+import com.example.quizzApp.enums.Roles;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +15,19 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, unique = true)
     private Integer id;
+
+    @Column(name = "user_name", nullable = false, unique = true)
     private String userName;
+    @Column(name = "pass_word", nullable = false)
+    private String passWord;
 
-    private String PassWord;
+    @Column(name = "user_email", nullable = false, unique = true)
+    private String email;
 
-    private String roles;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "roles", nullable = false)
+    private Roles roles;
 
 }

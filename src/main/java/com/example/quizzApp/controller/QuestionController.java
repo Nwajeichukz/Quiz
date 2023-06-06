@@ -1,5 +1,7 @@
 package com.example.quizzApp.controller;
 
+import com.example.quizzApp.Exception.IdNotFoundException;
+import com.example.quizzApp.dto.PostQuestionDto;
 import com.example.quizzApp.dto.QuestionDto;
 import com.example.quizzApp.dto.QuestionResponse;
 import com.example.quizzApp.entity.QuestionForm;
@@ -20,20 +22,34 @@ public class QuestionController {
     @Autowired
     private final QuestionService questionService;
 
-    @GetMapping("/all")
-    public String get(){
-        return "these are all";
-    }
 
     @GetMapping("all-questions")
-    public List<QuestionForm> getAll(){
+    public List<QuestionDto> getAll(){
         return questionService.getAllQuestion();
     }
 
-    @PostMapping("create-questions")
-    public ResponseEntity<QuestionResponse> create(@Valid @RequestBody QuestionDto questionDto){
-        return ResponseEntity.ok(questionService.save(questionDto));
+
+    @GetMapping("question-by-id/{id}")
+    public QuestionDto getQuestionById(@PathVariable int id) throws IdNotFoundException {
+        return questionService.getQuestionById(id);
     }
+    @GetMapping("get-category/{category}")
+    public List<QuestionDto> getByCategory(@PathVariable String category ) {
+        return questionService.getCategory(category);
+    }
+
+    @GetMapping("random-question")
+    public List<QuestionForm> getRandom(){
+        return questionService.getRandomNumber();
+    }
+
+
+
+    @PostMapping("create-questions")
+    public ResponseEntity<QuestionResponse> create(@Valid @RequestBody PostQuestionDto postQuestionDto){
+        return ResponseEntity.ok(questionService.save(postQuestionDto));
+    }
+
 
 
 }

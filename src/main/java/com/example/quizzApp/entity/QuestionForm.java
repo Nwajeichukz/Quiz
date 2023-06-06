@@ -5,9 +5,6 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Data
@@ -35,8 +32,11 @@ public class QuestionForm {
     @Column(name = "option_d", nullable = false)
     private String optionD;
 
+    @Column(name = "question_category", nullable = false)
+    private String questionCategory;
 
     @Column(name = "ans", nullable = false)
     private Integer ans;
+
 
 }

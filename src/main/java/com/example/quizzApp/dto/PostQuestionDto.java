@@ -8,10 +8,7 @@ import javax.validation.constraints.NotNull;
 
 @Data
 @RequiredArgsConstructor
-public class QuestionDto {
-    @NotBlank(message = "ID should not be blank")
-    private Integer id;
-
+public class PostQuestionDto {
     @NotBlank(message = "question should not be blank")
     private String question;
 
@@ -26,5 +23,9 @@ public class QuestionDto {
 
     @NotBlank(message = "option D should not be blank")
     private String optionD;
+    @NotBlank(message = "question category should not be blank")
+    private String questionCategory;
 
+    @NotNull(message = "answer should not be blank")
+    private Integer ans;
 }

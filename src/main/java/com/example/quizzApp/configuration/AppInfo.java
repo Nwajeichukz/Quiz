@@ -1,13 +1,11 @@
 package com.example.quizzApp.configuration;
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
-@ConfigurationProperties("api.info")
-@Component
+import lombok.Data;
+
 @Data
-public class ApiInfo {
+public class AppInfo {
+
     private String title;
 
     private String description;

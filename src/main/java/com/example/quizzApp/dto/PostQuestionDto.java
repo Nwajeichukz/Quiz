@@ -23,8 +23,6 @@ public class PostQuestionDto {
 
     @NotBlank(message = "option D should not be blank")
     private String optionD;
-    @NotBlank(message = "question category should not be blank")
-    private String questionCategory;
 
     @NotNull(message = "answer should not be blank")
     private Integer ans;

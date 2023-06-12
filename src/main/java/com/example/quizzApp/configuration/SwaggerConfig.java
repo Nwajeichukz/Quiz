@@ -10,12 +10,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
     @Bean
-    public OpenAPI bookOpenApi (ApiInfo apiInfo){
+    public OpenAPI bookOpenApi (AppConfig appConfig){
+        final AppInfo appInfo = appConfig.getApiInfo();
         return new OpenAPI()
-                .info(new Info().title(apiInfo.getTitle())
-                        .description(apiInfo.getDescription())
-                        .version(apiInfo.getVersion())
-                        .contact(new Contact().email(apiInfo.getContactEmail()).name(apiInfo.getContactName()).url(apiInfo.getContactUrl()))
+                .info(new Info().title(appInfo.getTitle())
+                        .description(appInfo.getDescription())
+                        .version(appInfo.getVersion())
+                        .contact(new Contact().email(appInfo.getContactEmail()).name(appInfo.getContactName()).url(appInfo.getContactUrl()))
                         .license(new License().name("Apache 2.0").url("https://www.apache.org/licenses/LICENSE-2.0.txt")));
     }
 }

@@ -32,9 +32,6 @@ public class QuestionForm {
     @Column(name = "option_d", nullable = false)
     private String optionD;
 
-    @Column(name = "question_category", nullable = false)
-    private String questionCategory;
-
     @Column(name = "ans", nullable = false)
     private Integer ans;
 

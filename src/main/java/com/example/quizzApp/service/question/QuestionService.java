@@ -2,21 +2,20 @@ package com.example.quizzApp.service.question;
 
 import com.example.quizzApp.dto.PostQuestionDto;
 import com.example.quizzApp.dto.QuestionDto;
-import com.example.quizzApp.dto.QuestionResponse;
-import com.example.quizzApp.entity.QuestionForm;
+import com.example.quizzApp.dto.QuizAppResponse;
+import org.springframework.data.domain.Pageable;
 
-import java.util.List;
+import java.util.Map;
 
 public interface QuestionService {
-    List<QuestionDto> getAllQuestion();
+    QuizAppResponse<Map<String, Object>> getAllQuestion(Pageable pageable);
 
-    QuestionDto getQuestionById(int id);
+    QuizAppResponse<QuestionDto> getQuestionById(long id);
 
-    List<QuestionForm> getRandomNumber();
+    public QuizAppResponse<Map<String, Object>> getRandom(Pageable pageable);
+    QuizAppResponse<?> save(PostQuestionDto postQuestionDto);
 
-    QuestionResponse save(PostQuestionDto postQuestionDto);
+    QuizAppResponse<?> updatingQuestion(long id, PostQuestionDto postQuestionDto);
 
-    QuestionResponse updatingById(int id, PostQuestionDto postQuestionDto);
-
-    void deleteById(int id);
+    void deleteById(long id);
 }

@@ -1,24 +1,27 @@
 package com.example.quizzApp.dto;
 
-import com.example.quizzApp.enums.Roles;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
+
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequest {
 
-    private String firstname;
+    @NotEmpty(message = "username should not be blank")
+    private String username;
 
-    private String lastname;
+    @javax.validation.constraints.Pattern(regexp = "(\\w+@)(\\w+\\.com)", message = "wrong email format")
+    private String  email;
 
-    private String email;
-
+    @NotEmpty(message = "password should not be blank")
     private String password;
 
-    private Roles role;
+    @NotEmpty(message = "confirm password should not be blank")
+    private String confirmPassword;
 }
+
+

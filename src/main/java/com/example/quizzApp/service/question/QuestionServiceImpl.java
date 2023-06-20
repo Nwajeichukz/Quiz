@@ -1,118 +1,180 @@
 package com.example.quizzApp.service.question;
 
 import com.example.quizzApp.Exception.ApiException;
+import com.example.quizzApp.dto.OptionDto;
 import com.example.quizzApp.dto.PostQuestionDto;
 import com.example.quizzApp.dto.QuestionDto;
-import com.example.quizzApp.dto.QuestionResponse;
-import com.example.quizzApp.entity.QuestionForm;
-import com.example.quizzApp.enums.ResponseCodeEnum;
+import com.example.quizzApp.dto.QuizAppResponse;
+import com.example.quizzApp.entity.QuestionOption;
+import com.example.quizzApp.entity.QuizQuestion;
 import com.example.quizzApp.repository.QuestionRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
-
 
     private final QuestionRepository questionRepository;
 
 
     @Override
-    public List<QuestionDto> getAllQuestion(){
-        List<QuestionForm> questionForms = questionRepository.findAll();
-        List<QuestionDto> returnedQuestion = new ArrayList<>();
+    public QuizAppResponse<Map<String, Object>> getAllQuestion(Pageable pageable) {
+        // Converting quizQuestion too QuestionDto loop it and returned it as DTO
+        Page<QuestionDto> quizQuestions = questionRepository.findAll(pageable).map(QuestionDto::new);
 
-        if (questionForms.isEmpty()) throw new ApiException();
+        // Map.of takes up too 10 keys and values
+        Map<String, Object> page = Map.of(
+                "page", quizQuestions.getNumber(),
+                "totalPages", quizQuestions.getTotalPages(),
+                "totalElements", quizQuestions.getTotalElements(),
+                "size", quizQuestions.getSize(),
+                "content", quizQuestions.getContent()
+        );
 
-        for (QuestionForm qForm: questionForms) returnedQuestion.add(createQuestionDto(qForm));
+        return new QuizAppResponse<>("success", page);
+    }
+//
+//    public QuizAppResponse<Map<String, Object>> getAllQuestionX(Pageable pageable) {
+//        Page<QuizQuestion> quizQuestions = questionRepository.findAll(pageable);
+//        Collection<QuestionDto> content = new ArrayList<>();
+//
+//        for (QuizQuestion question: quizQuestions.getContent()){
+//            QuestionDto dto = new QuestionDto(question);
+//            content.add(dto);
+//        }
+//
+//        Map<String, Object> page = Map.of(
+//                "page", quizQuestions.getNumber(),
+//                "totalPages", quizQuestions.getTotalPages(),
+//                "totalElements", quizQuestions.getTotalElements(),
+//                "size", quizQuestions.getSize(),
+//                "content", content
+//        );
+//
+////        return new QuizAppResponse<>("success", page);
+//    }
 
-        return returnedQuestion;
+    @Override
+    public QuizAppResponse<QuestionDto> getQuestionById(long id) {
+        QuizQuestion quizQuestion = questionRepository.findById(id).orElseThrow(() -> new ApiException("Question not found"));
+
+
+        return new QuizAppResponse<>(0,
+                "Question successfully retrieved",
+                new QuestionDto(quizQuestion)
+        );
     }
 
     @Override
-    public QuestionDto getQuestionById(int id)  {
-        Optional<QuestionForm> questionForm = questionRepository.findById(id);
-        QuestionForm returned = questionForm.get();
+    public QuizAppResponse<Map<String, Object>> getRandom(Pageable pageable) {
+        Page<QuestionDto> questions = questionRepository.findAll(pageable)
+                .map(question -> new QuestionDto(question))
+                .map(dto->{
+                    List<OptionDto> modifiableList = new ArrayList<>(dto.getOptions());
+                    shuffleList(modifiableList);
+                    log.info("--> options before setting to new arraylist {}", dto.getOptions());
+                    dto.setOptions(modifiableList);
+                    log.info("--> options after setting to shuffled list {}", dto.getOptions());
 
-        if (questionForm == null) throw new ApiException();
+                    return dto;
+                });
 
-        return createQuestionDto(returned);
+        List<QuestionDto> modifiableQuestions = new ArrayList<>(questions.getContent());
+
+        Collections.shuffle(modifiableQuestions, new Random(modifiableQuestions.size()));
+
+
+        Map<String, Object> page = Map.of(
+                "page", questions.getNumber(),
+                "totalPages", questions.getTotalPages(),
+                "totalElements", questions.getTotalElements(),
+                "size", questions.getSize(),
+                "content", modifiableQuestions
+        );
+
+        return new QuizAppResponse<>(0, "success", page);
     }
 
     @Override
-    public List<QuestionForm> getRandomNumber() {
-        return questionRepository.findAllById(getRandomNums());
+    public QuizAppResponse<?> save(PostQuestionDto postQuestionDto) {
+
+        if (CollectionUtils.isEmpty(postQuestionDto.getOptions()))
+            throw new ApiException("Question options is required");
+
+        QuizQuestion quizQuestion = new QuizQuestion();
+        quizQuestion.setQuestion(postQuestionDto.getQuestion());
+
+        quizQuestion.setOptions(
+                dtoToQuestionOptions(postQuestionDto, quizQuestion)
+        );
+
+        questionRepository.save(quizQuestion);
+
+        return new QuizAppResponse<>(0, "Question successfully created", "success");
     }
 
     @Override
-    public QuestionResponse save(PostQuestionDto postQuestionDto) {
-        questionRepository.save(createQuestionForm(postQuestionDto));
-        return new QuestionResponse(ResponseCodeEnum.SUCCESS.getCode(), ResponseCodeEnum.SUCCESS.getDescription());
-    }
+    public QuizAppResponse<?> updatingQuestion(long id, PostQuestionDto postQuestionDto) {
+        QuizQuestion quizQuestion = questionRepository.findById(id).orElseThrow(() -> new ApiException("ID do not exist"));
 
-    @Override
-    public QuestionResponse updatingById(int id, PostQuestionDto postQuestionDto) {
-        Optional<QuestionForm> returnedQuestion = questionRepository.findById(id);
-        if (returnedQuestion.isPresent()) {
-            QuestionForm questionForm = returnedQuestion.get();
-            questionForm.setQuestion(postQuestionDto.getQuestion());
-            questionForm.setOptionA(postQuestionDto.getOptionA());
-            questionForm.setOptionB(postQuestionDto.getOptionB());
-            questionForm.setOptionC(postQuestionDto.getOptionC());
-            questionForm.setOptionD(postQuestionDto.getOptionD());
-            questionForm.setAns(postQuestionDto.getAns());
+        quizQuestion.setQuestion(postQuestionDto.getQuestion());
 
-            questionRepository.save(questionForm);
-        }else {
-            throw new ApiException();
-        }
-        return new QuestionResponse(ResponseCodeEnum.SUCCESS.getCode(), ResponseCodeEnum.SUCCESS.getDescription());
+        questionRepository.save(quizQuestion);
+
+        return new QuizAppResponse<>(0, "Question successfully updated", "success");
     }
 
 
+
     @Override
-    public void deleteById(int id) {
+    public void deleteById(long id) {
         questionRepository.deleteById(id);
-    }
 
-    public Iterable<Integer> getRandomNums() {
-        List<QuestionForm> all = questionRepository.findAll();
-
-        if (all.isEmpty()) throw new ApiException();
-
-        long totalNums = all.stream().count();
-
-        Integer randomNumber = (int)(Math.random() * (totalNums)) + 1 ;
-        return Collections.singleton(randomNumber);
     }
 
 
-    private QuestionDto createQuestionDto(QuestionForm questionForm){
-        QuestionDto questionDto = new QuestionDto();
-        questionDto.setId(questionForm.getId());
-        questionDto.setQuestion(questionForm.getQuestion());
-        questionDto.setOptionA(questionForm.getOptionA());
-        questionDto.setOptionB(questionForm.getOptionB());
-        questionDto.setOptionC(questionForm.getOptionC());
-        questionDto.setOptionD(questionForm.getOptionD());
-        return questionDto;
+    private List<QuestionOption> dtoToQuestionOptions(PostQuestionDto dto, QuizQuestion question) {
+        List<QuestionOption> options = dto.getOptions().stream().map(opt -> {
+            QuestionOption option = new QuestionOption();
+            option.setQuestion(question);
+            option.setValue(opt);
+            option.setAnswer(false);
+            return option;
+        }).collect(Collectors.toList());
+
+        //set the answer
+
+        final int answerIndex = dto.getOptions().indexOf(dto.getAnswer());
+        if (answerIndex < 0)
+            throw new ApiException("No answer provided");
+
+        options.get(answerIndex).setAnswer(true);
+
+        return options;
     }
 
-    private QuestionForm createQuestionForm(PostQuestionDto postQuestionDto){
-        QuestionForm questionForm = new QuestionForm();
-        questionForm.setQuestion(postQuestionDto.getQuestion());
-        questionForm.setOptionA(postQuestionDto.getOptionA());
-        questionForm.setOptionB(postQuestionDto.getOptionB());
-        questionForm.setOptionC(postQuestionDto.getOptionC());
-        questionForm.setOptionD(postQuestionDto.getOptionD());
-        questionForm.setAns(postQuestionDto.getAns());
+    public void shuffleList(List<OptionDto> a){
+        int n = a.size();
+        Random random = new Random();
+        random.nextInt();
+        for (int i = 0; i < n; i++) {
+            int change = i + random.nextInt(n - i);
+            swap(a, i, change);
+        }
+    }
 
-        return questionForm;
+    public void swap(List<OptionDto> a, int i, int change){
+        OptionDto helper = a.get(i);
+        a.set(i,a.get(change));
+        a.set(change,helper);
     }
 }

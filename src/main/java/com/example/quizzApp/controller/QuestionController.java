@@ -2,16 +2,19 @@ package com.example.quizzApp.controller;
 
 import com.example.quizzApp.dto.PostQuestionDto;
 import com.example.quizzApp.dto.QuestionDto;
-import com.example.quizzApp.dto.QuestionResponse;
-import com.example.quizzApp.entity.QuestionForm;
+import com.example.quizzApp.dto.QuizAppResponse;
+import com.example.quizzApp.dto.UpdateOptionsDto;
 import com.example.quizzApp.service.question.QuestionService;
+import com.example.quizzApp.service.questionOption.QuestionOptionService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.List;
+import java.util.Map;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -19,35 +22,59 @@ import java.util.List;
 public class QuestionController {
 
     private final QuestionService questionServiceImpl;
+    private final QuestionOptionService questionOptionService;
 
     @GetMapping
-    public List<QuestionDto> getAll(){
-        return questionServiceImpl.getAllQuestion();
+    public ResponseEntity<QuizAppResponse<Map<String, Object>>> getAll(
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size
+    ){
+
+        return ResponseEntity.ok(questionServiceImpl.getAllQuestion(PageRequest.of(page, size) ));
     }
+
     @GetMapping("/{id}")
-    public ResponseEntity<QuestionDto> getQuestionById(@PathVariable int id){
-        return new ResponseEntity<>(questionServiceImpl.getQuestionById(id), HttpStatus.OK);
+    public ResponseEntity<QuizAppResponse<QuestionDto>> getQuestionById(@PathVariable long id){
+        return  ResponseEntity.ok(
+                questionServiceImpl.getQuestionById(id)
+        );
     }
 
     @GetMapping("/random")
-    public ResponseEntity<List<QuestionForm>> getRandom(){
-        return new ResponseEntity<>(questionServiceImpl.getRandomNumber(), HttpStatus.OK);
+    public ResponseEntity<QuizAppResponse<Map<String, Object>>> getRandom(Pageable page){
+        return ResponseEntity.ok(questionServiceImpl.getRandom(page));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
-    public ResponseEntity<QuestionResponse> updatingQuestion(@PathVariable int id, @RequestBody PostQuestionDto postQuestionDto){
-        return new ResponseEntity<>(questionServiceImpl.updatingById(id, postQuestionDto), HttpStatus.ACCEPTED);
+    public ResponseEntity<QuizAppResponse<?>> updatingQuestion(@PathVariable long id, @RequestBody PostQuestionDto postQuestionDto){
+        return
+                ResponseEntity.ok(
+                        questionServiceImpl.updatingQuestion(id, postQuestionDto)
+                );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PatchMapping("opt/{id}")
+    public ResponseEntity<QuizAppResponse<?>> updatingOptions(@PathVariable long id, @RequestBody UpdateOptionsDto val){
+        return
+                ResponseEntity.ok(
+                        questionOptionService.updateOption(id, val)
+                );
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public void deleteQuestion(@PathVariable int id){
+    public void deleteQuestion(@PathVariable long id){
         questionServiceImpl.deleteById(id);
     }
 
-    @PostMapping
-    public ResponseEntity<QuestionResponse> create(@Valid @RequestBody PostQuestionDto postQuestionDto){
-        return new ResponseEntity<>(
-                questionServiceImpl.save(postQuestionDto),
-                HttpStatus.CREATED);
+
+    @PostMapping("/add")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<QuizAppResponse<?>> create(@RequestBody PostQuestionDto postQuestionDto){
+        return ResponseEntity.ok(
+                questionServiceImpl.save(postQuestionDto)
+                );
     }
 }

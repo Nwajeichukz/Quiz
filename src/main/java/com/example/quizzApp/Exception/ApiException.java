@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class ApiException extends RuntimeException {
 
-    private  String errorCode;
+    private String errorCode;
     private String errorMessage;
 
     public ApiException(String errorCode, String errorMessage) {
@@ -14,7 +14,8 @@ public class ApiException extends RuntimeException {
         this.errorMessage = errorMessage;
     }
 
-    public ApiException() {
-        super();
+    public ApiException(String message) {
+        super(message);
+        this.errorMessage = message;
     }
 }

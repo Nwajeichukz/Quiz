@@ -1,30 +1,30 @@
 package com.example.quizzApp.dto;
 
+import com.example.quizzApp.entity.QuizQuestion;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Data
 @RequiredArgsConstructor
 public class QuestionDto {
-    @NotBlank(message = "ID should not be blank")
-    private Integer id;
 
-    @NotBlank(message = "question should not be blank")
+    private Long id;
+
+
     private String question;
 
-    @NotBlank(message = "option A should not be blank")
-    private String optionA;
+    Collection<OptionDto> options;
 
-    @NotBlank(message = "option B should not be blank")
-    private String optionB;
 
-    @NotBlank(message = "option C should not be blank")
-    private String optionC;
+    public QuestionDto(QuizQuestion question){
+        id = question.getId();
+        this.question = question.getQuestion();
 
-    @NotBlank(message = "option D should not be blank")
-    private String optionD;
-
+        options = question.getOptions().stream()
+                        .map(o -> new OptionDto(o)
+                        ).collect(Collectors.toList());
+    }
 }

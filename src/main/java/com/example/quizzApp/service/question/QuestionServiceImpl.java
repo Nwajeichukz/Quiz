@@ -1,12 +1,10 @@
 package com.example.quizzApp.service.question;
 
 import com.example.quizzApp.Exception.ApiException;
-import com.example.quizzApp.dto.OptionDto;
-import com.example.quizzApp.dto.PostQuestionDto;
-import com.example.quizzApp.dto.QuestionDto;
-import com.example.quizzApp.dto.QuizAppResponse;
+import com.example.quizzApp.dto.*;
 import com.example.quizzApp.entity.QuestionOption;
 import com.example.quizzApp.entity.QuizQuestion;
+import com.example.quizzApp.repository.OptionRepository;
 import com.example.quizzApp.repository.QuestionRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +22,7 @@ import java.util.stream.Collectors;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
+    private final OptionRepository optionRepository;
 
 
     @Override
@@ -31,7 +30,7 @@ public class QuestionServiceImpl implements QuestionService {
         // Converting quizQuestion too QuestionDto loop it and returned it as DTO
         Page<QuestionDto> quizQuestions = questionRepository.findAll(pageable).map(QuestionDto::new);
 
-        // Map.of takes up too 10 keys and values
+        // Map.of takes up to 10 keys and values
         Map<String, Object> page = Map.of(
                 "page", quizQuestions.getNumber(),
                 "totalPages", quizQuestions.getTotalPages(),
@@ -41,12 +40,13 @@ public class QuestionServiceImpl implements QuestionService {
         );
 
         return new QuizAppResponse<>("success", page);
+
     }
-//
+
 //    public QuizAppResponse<Map<String, Object>> getAllQuestionX(Pageable pageable) {
 //        Page<QuizQuestion> quizQuestions = questionRepository.findAll(pageable);
 //        Collection<QuestionDto> content = new ArrayList<>();
-//
+
 //        for (QuizQuestion question: quizQuestions.getContent()){
 //            QuestionDto dto = new QuestionDto(question);
 //            content.add(dto);
@@ -104,6 +104,7 @@ public class QuestionServiceImpl implements QuestionService {
         return new QuizAppResponse<>(0, "success", page);
     }
 
+
     @Override
     public QuizAppResponse<?> save(PostQuestionDto postQuestionDto) {
 
@@ -132,6 +133,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         return new QuizAppResponse<>(0, "Question successfully updated", "success");
     }
+
 
 
 

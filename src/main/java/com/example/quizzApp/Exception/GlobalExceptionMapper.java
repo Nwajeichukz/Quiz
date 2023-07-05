@@ -45,6 +45,6 @@ public class GlobalExceptionMapper extends ResponseEntityExceptionHandler {
         List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
         String responseDescription = fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(", "));
         QuizAppResponse response = new QuizAppResponse(-1, responseDescription);
-        return new ResponseEntity(response, headers, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
     }
 }

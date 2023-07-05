@@ -30,7 +30,6 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-
         final String[] WHITE_LIST = new String[]{
                 "/auth/**"
         };

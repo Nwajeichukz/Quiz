@@ -18,4 +18,5 @@ public interface QuestionService {
     QuizAppResponse<?> updatingQuestion(long id, PostQuestionDto postQuestionDto);
 
     void deleteById(long id);
+
 }

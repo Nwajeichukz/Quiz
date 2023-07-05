@@ -15,9 +15,10 @@ public class User {
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
-    @Column(name = "user_name", nullable = false, unique = true)
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
-    @Column(name = "pass_word", nullable = false)
+
+    @Column(name = "password", nullable = false)
     private String password;
 
     @Column(name = "user_email", nullable = false, unique = true)
@@ -26,5 +27,4 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_fk", referencedColumnName = "id")
     private Role roles;
-
 }

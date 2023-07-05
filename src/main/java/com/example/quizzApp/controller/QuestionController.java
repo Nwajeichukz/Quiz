@@ -1,9 +1,6 @@
 package com.example.quizzApp.controller;
 
-import com.example.quizzApp.dto.PostQuestionDto;
-import com.example.quizzApp.dto.QuestionDto;
-import com.example.quizzApp.dto.QuizAppResponse;
-import com.example.quizzApp.dto.UpdateOptionsDto;
+import com.example.quizzApp.dto.*;
 import com.example.quizzApp.service.question.QuestionService;
 import com.example.quizzApp.service.questionOption.QuestionOptionService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +17,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/questions")
 public class QuestionController {
-
     private final QuestionService questionServiceImpl;
     private final QuestionOptionService questionOptionService;
 
@@ -29,8 +25,7 @@ public class QuestionController {
             @RequestParam(value = "page", required = false, defaultValue = "0") int page,
             @RequestParam(value = "size", required = false, defaultValue = "10") int size
     ){
-
-        return ResponseEntity.ok(questionServiceImpl.getAllQuestion(PageRequest.of(page, size) ));
+        return ResponseEntity.ok(questionServiceImpl.getAllQuestion(PageRequest.of(page, size)));
     }
 
     @GetMapping("/{id}")
@@ -53,6 +48,13 @@ public class QuestionController {
                         questionServiceImpl.updatingQuestion(id, postQuestionDto)
                 );
     }
+
+
+    @GetMapping("/ans/{questionId}/{optionId}")
+    public ResponseEntity<QuizAppResponse<?>> getAnsAndQuestion(@PathVariable("questionId")long questionId , @PathVariable("optionId") long optionId){
+        return ResponseEntity.ok(questionOptionService.getAnsAndQuestion(questionId, optionId));
+    }
+
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("opt/{id}")
@@ -77,4 +79,5 @@ public class QuestionController {
                 questionServiceImpl.save(postQuestionDto)
                 );
     }
+
 }

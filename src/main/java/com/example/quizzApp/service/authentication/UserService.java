@@ -4,10 +4,12 @@ import com.example.quizzApp.dto.AuthenticationRequest;
 import com.example.quizzApp.dto.QuizAppResponse;
 import com.example.quizzApp.dto.RegisterRequest;
 
+import java.util.Map;
+
 public interface UserService {
-    QuizAppResponse<?> createUser(RegisterRequest request);
+    QuizAppResponse<Map<String, Object>> createUser(RegisterRequest request);
 
-    QuizAppResponse<?> createAdmin(RegisterRequest request);
+    QuizAppResponse<Map<String, Object>> createAdmin(RegisterRequest request);
 
-    QuizAppResponse<?> login(AuthenticationRequest authenticationRequest);
+    QuizAppResponse<String> login(AuthenticationRequest authenticationRequest);
 }

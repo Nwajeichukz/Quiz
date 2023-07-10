@@ -13,9 +13,9 @@ public interface QuestionService {
     QuizAppResponse<QuestionDto> getQuestionById(long id);
 
     public QuizAppResponse<Map<String, Object>> getRandom(Pageable pageable);
-    QuizAppResponse<?> save(PostQuestionDto postQuestionDto);
+    QuizAppResponse<String> save(PostQuestionDto postQuestionDto);
 
-    QuizAppResponse<?> updatingQuestion(long id, PostQuestionDto postQuestionDto);
+    QuizAppResponse<String> updatingQuestion(long id, PostQuestionDto postQuestionDto);
 
     void deleteById(long id);
 

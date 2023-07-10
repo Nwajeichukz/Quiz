@@ -18,6 +18,8 @@ public class QuestionOption {
 
     private boolean isAnswer;
 
+    private int point;
+
     @ManyToOne
     private QuizQuestion question;
 }

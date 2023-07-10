@@ -13,9 +13,12 @@ public class OptionDto {
 
     private boolean isAnswer;
 
+    private int point;
+
     public OptionDto(QuestionOption option){
         id = option.getId();
         value = option.getValue();
         isAnswer = option.isAnswer();
+        point = option.getPoint();
     }
 }

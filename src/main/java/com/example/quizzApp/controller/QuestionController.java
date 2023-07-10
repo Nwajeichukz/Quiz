@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 
@@ -42,7 +44,7 @@ public class QuestionController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/{id}")
-    public ResponseEntity<QuizAppResponse<?>> updatingQuestion(@PathVariable long id, @RequestBody PostQuestionDto postQuestionDto){
+    public ResponseEntity<QuizAppResponse<String>> updatingQuestion(@PathVariable long id, @RequestBody PostQuestionDto postQuestionDto){
         return
                 ResponseEntity.ok(
                         questionServiceImpl.updatingQuestion(id, postQuestionDto)
@@ -51,14 +53,20 @@ public class QuestionController {
 
 
     @GetMapping("/ans/{questionId}/{optionId}")
-    public ResponseEntity<QuizAppResponse<?>> getAnsAndQuestion(@PathVariable("questionId")long questionId , @PathVariable("optionId") long optionId){
+    public ResponseEntity<QuizAppResponse<Integer>> getAnsAndQuestion(@PathVariable("questionId")long questionId , @PathVariable("optionId") long optionId){
         return ResponseEntity.ok(questionOptionService.getAnsAndQuestion(questionId, optionId));
+    }
+
+
+    @PostMapping("/all-answer")
+    public ResponseEntity<List<AnswerResponse>> getAllAnsAndQuestion(@RequestBody List<AnswersDto> answersDto){
+        return ResponseEntity.ok(questionOptionService.getAllAnsAndQuestion(answersDto));
     }
 
 
     @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("opt/{id}")
-    public ResponseEntity<QuizAppResponse<?>> updatingOptions(@PathVariable long id, @RequestBody UpdateOptionsDto val){
+    public ResponseEntity<QuizAppResponse<OptionDto>> updatingOptions(@PathVariable long id, @RequestBody UpdateOptionsDto val){
         return
                 ResponseEntity.ok(
                         questionOptionService.updateOption(id, val)
@@ -74,7 +82,7 @@ public class QuestionController {
 
     @PostMapping("/add")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<QuizAppResponse<?>> create(@RequestBody PostQuestionDto postQuestionDto){
+    public ResponseEntity<QuizAppResponse<String>> create(@Valid @RequestBody PostQuestionDto postQuestionDto){
         return ResponseEntity.ok(
                 questionServiceImpl.save(postQuestionDto)
                 );

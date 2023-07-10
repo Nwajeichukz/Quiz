@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
 
     private final AuthenticationManager authenticationManager;
 
-    public QuizAppResponse<?> createUser(RegisterRequest request) {
+    public QuizAppResponse<Map<String, Object>> createUser(RegisterRequest request) {
         boolean check = userRepository.existsByUsernameOrEmail(request.getUsername(), request.getEmail());
 
         if (check) throw new ApiException("User already exists, login to continue");
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
         ));
     }
 
-    public QuizAppResponse<?> createAdmin(RegisterRequest request) {
+    public QuizAppResponse<Map<String, Object>> createAdmin(RegisterRequest request) {
         boolean check = userRepository.existsByUsernameOrEmail(request.getUsername(), request.getEmail());
 
         if (check) throw new ApiException("User already exists, login to continue");
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
         ));
     }
 
-    public QuizAppResponse<?> login(AuthenticationRequest authenticationRequest) {
+    public QuizAppResponse<String> login(AuthenticationRequest authenticationRequest) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword())
         );

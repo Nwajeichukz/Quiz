@@ -1,11 +1,13 @@
 package com.example.quizzApp.service.questionOption;
 
-import com.example.quizzApp.dto.QuizAppResponse;
-import com.example.quizzApp.dto.UpdateOptionsDto;
+import com.example.quizzApp.dto.*;
+
+import java.util.List;
 
 public interface QuestionOptionService {
-    QuizAppResponse<?> updateOption(long id, UpdateOptionsDto val);
+    QuizAppResponse<OptionDto> updateOption(long id, UpdateOptionsDto val);
 
-    QuizAppResponse<?> getAnsAndQuestion(long questionId, long optionId);
+    QuizAppResponse<Integer> getAnsAndQuestion(long questionId, long optionId);
 
+    List<AnswerResponse> getAllAnsAndQuestion(List<AnswersDto> answersDto);
 }

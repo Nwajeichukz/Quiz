@@ -10,8 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
     @Bean
-    public OpenAPI bookOpenApi (AppConfig appConfig){
-        final AppInfo appInfo = appConfig.getApiInfo();
+    public OpenAPI bookOpenApi (AppInfo appInfo){
         return new OpenAPI()
                 .info(new Info().title(appInfo.getTitle())
                         .description(appInfo.getDescription())

@@ -106,7 +106,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Override
-    public QuizAppResponse<?> save(PostQuestionDto postQuestionDto) {
+    public QuizAppResponse<String> save(PostQuestionDto postQuestionDto) {
 
         if (CollectionUtils.isEmpty(postQuestionDto.getOptions()))
             throw new ApiException("Question options is required");
@@ -124,14 +124,14 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public QuizAppResponse<?> updatingQuestion(long id, PostQuestionDto postQuestionDto) {
+    public QuizAppResponse<String> updatingQuestion(long id, PostQuestionDto postQuestionDto) {
         QuizQuestion quizQuestion = questionRepository.findById(id).orElseThrow(() -> new ApiException("ID do not exist"));
 
         quizQuestion.setQuestion(postQuestionDto.getQuestion());
 
         questionRepository.save(quizQuestion);
 
-        return new QuizAppResponse<>(0, "Question successfully updated", "success");
+        return new QuizAppResponse<>(0, "Question successfully updated", quizQuestion.getQuestion());
     }
 
 
@@ -150,16 +150,17 @@ public class QuestionServiceImpl implements QuestionService {
             option.setQuestion(question);
             option.setValue(opt);
             option.setAnswer(false);
+            option.setPoint(0);
             return option;
         }).collect(Collectors.toList());
 
         //set the answer
-
         final int answerIndex = dto.getOptions().indexOf(dto.getAnswer());
         if (answerIndex < 0)
             throw new ApiException("No answer provided");
 
         options.get(answerIndex).setAnswer(true);
+        options.get(answerIndex).setPoint(dto.getPoint());
 
         return options;
     }

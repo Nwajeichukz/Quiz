@@ -97,8 +97,4 @@ public class UserServiceImpl implements UserService {
         return  new QuizAppResponse<>(0,"Successfully logged in", jwtToken);
 
     }
-
-    public List<User> getAllP(){
-        return userRepository.findAll();
-    }
 }

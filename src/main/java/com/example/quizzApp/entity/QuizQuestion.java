@@ -1,16 +1,14 @@
 package com.example.quizzApp.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Data
-@RequiredArgsConstructor
-@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "QUIZ_QUESTIONS")
 public class QuizQuestion {
 

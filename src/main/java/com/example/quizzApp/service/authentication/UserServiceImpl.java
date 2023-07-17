@@ -16,6 +16,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -95,5 +96,9 @@ public class UserServiceImpl implements UserService {
 
         return  new QuizAppResponse<>(0,"Successfully logged in", jwtToken);
 
+    }
+
+    public List<User> getAllP(){
+        return userRepository.findAll();
     }
 }

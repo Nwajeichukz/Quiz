@@ -139,8 +139,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void deleteById(long id) {
-        questionRepository.deleteById(id);
-
+        QuizQuestion quizQuestion = questionRepository.findById(id).orElseThrow(()-> new ApiException("id do not exist"));
+        questionRepository.delete(quizQuestion);
     }
 
 

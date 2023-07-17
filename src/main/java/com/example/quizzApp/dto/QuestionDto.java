@@ -27,4 +27,8 @@ public class QuestionDto {
                         .map(o -> new OptionDto(o)
                         ).collect(Collectors.toList());
     }
+
+
+    public QuestionDto(QuestionDto questionDto) {
+    }
 }

@@ -80,19 +80,20 @@ public class QuestionOptionServiceImpl implements QuestionOptionService {
                                     .option(optionId)
                                     .questionId(questionId)
                                     .message("success")
-                                    .build())
-                                    .score(score).status(0).build());
+                                    .build()
+                    )
+                    .score(score)
+                    .status(0)
+                    .build());
         }
 
         return answerResponses;
 
 //        int questionIdSize = questionsId.size();
 //        int answersIdSize = answersId.size();
-//
 
 //        if (questionIdSize != answersIdSize) throw new ApiException ("both List most have same length");
-//
-//
+
 //        for (int i = 0; i < answersIdSize; i++) {
 //            for (int j = 0; j < questionIdSize; j++) {
 //                QuestionOption option = options.get(i);
@@ -102,7 +103,6 @@ public class QuestionOptionServiceImpl implements QuestionOptionService {
 //                if (optionEntityQuest.getId().equals(questionsId.get(j)) )  scores += option.getPoint();
 //            }
 //        }
-//
 
 
     }

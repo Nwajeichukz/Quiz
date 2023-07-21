@@ -1,10 +1,12 @@
 package com.example.quizzApp.service.question;
 
 import com.example.quizzApp.Exception.ApiException;
-import com.example.quizzApp.dto.*;
+import com.example.quizzApp.dto.OptionDto;
+import com.example.quizzApp.dto.PostQuestionDto;
+import com.example.quizzApp.dto.QuestionDto;
+import com.example.quizzApp.dto.QuizAppResponse;
 import com.example.quizzApp.entity.QuestionOption;
 import com.example.quizzApp.entity.QuizQuestion;
-import com.example.quizzApp.repository.OptionRepository;
 import com.example.quizzApp.repository.QuestionRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +24,6 @@ import java.util.stream.Collectors;
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
-    private final OptionRepository optionRepository;
 
 
     @Override
@@ -43,25 +44,6 @@ public class QuestionServiceImpl implements QuestionService {
 
     }
 
-//    public QuizAppResponse<Map<String, Object>> getAllQuestionX(Pageable pageable) {
-//        Page<QuizQuestion> quizQuestions = questionRepository.findAll(pageable);
-//        Collection<QuestionDto> content = new ArrayList<>();
-
-//        for (QuizQuestion question: quizQuestions.getContent()){
-//            QuestionDto dto = new QuestionDto(question);
-//            content.add(dto);
-//        }
-//
-//        Map<String, Object> page = Map.of(
-//                "page", quizQuestions.getNumber(),
-//                "totalPages", quizQuestions.getTotalPages(),
-//                "totalElements", quizQuestions.getTotalElements(),
-//                "size", quizQuestions.getSize(),
-//                "content", content
-//        );
-//
-////        return new QuizAppResponse<>("success", page);
-//    }
 
     @Override
     public QuizAppResponse<QuestionDto> getQuestionById(long id) {
@@ -106,7 +88,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 
     @Override
-    public QuizAppResponse<String> save(PostQuestionDto postQuestionDto) {
+    public QuizAppResponse<String> createQuestion(PostQuestionDto postQuestionDto) {
 
         if (CollectionUtils.isEmpty(postQuestionDto.getOptions()))
             throw new ApiException("Question options is required");
@@ -144,7 +126,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
 
-    private List<QuestionOption> dtoToQuestionOptions(PostQuestionDto dto, QuizQuestion question) {
+    public List<QuestionOption> dtoToQuestionOptions(PostQuestionDto dto, QuizQuestion question) {
         List<QuestionOption> options = dto.getOptions().stream().map(opt -> {
             QuestionOption option = new QuestionOption();
             option.setQuestion(question);

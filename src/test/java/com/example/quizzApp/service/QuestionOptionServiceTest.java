@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.Mockito.when;
@@ -75,44 +76,56 @@ public class QuestionOptionServiceTest {
 
 
     }
-//
-//    @Test
-//    public void OptionQuestionService_getAnsAllAndQuestion_Integer(){
-////        List<Long> optionId = List.of(3l,6l,9l);
-////        List<Long> questionId = List.of(1l,2l,3l);
-//
-//        QuizQuestion quizQuestion = new QuizQuestion();
-//        QuestionOption option = new QuestionOption();
-//        option.setId(1l);
-//        option.setValue("janet");
-//        option.setPoint(3);
-//        option.setAnswer(true);
-//        option.setQuestion(quizQuestion);
-//
-//        quizQuestion.setId(1l);
-//        quizQuestion.setQuestion("sabinus");
-//        quizQuestion.setOptions(List.of(option));
-//
-//        PostQuestionDto postQuestionDto = PostQuestionDto.builder()
-//                .question("sabinus")
-//                .answer("janet")
-//                .options(List.of("janet", "prof", "super hero"))
-//                .point(3)
-//                .build();
-//
-//        AnswersDto answersDto = new AnswersDto(1l,3l);
-////        AnswersDto answersDto2 = new AnswersDto(2l,6l);
-////        AnswersDto answersDto3 = new AnswersDto(3l,9l);
-//
-//
-//
-//        when(optionRepository.findAllById(List.of(answersDto.getAnswersId()))).thenReturn(List.of(option));
-//
-////        questionOptionService.getAllAnsAndQuestion(List.of(answersDto));
-//
-//        Assertions.assertThat(questionOptionService.getAllAnsAndQuestion(List.of(answersDto))).isNotNull();
-//
-//
-//    }
 
+    @Test
+    public void OptionQuestionService_getAnsAllAndQuestion_Integer(){
+        QuizQuestion quizQuestion = new QuizQuestion();
+        QuestionOption option1 = new QuestionOption();
+        option1.setId(1l);
+        option1.setValue("janet");
+        option1.setPoint(3);
+        option1.setAnswer(true);
+        option1.setQuestion(quizQuestion);
+
+        QuestionOption option2 = new QuestionOption();
+        option2.setId(2l);
+        option2.setValue("sam");
+        option2.setPoint(0);
+        option2.setAnswer(false);
+        option2.setQuestion(quizQuestion);
+
+        quizQuestion.setId(1l);
+        quizQuestion.setQuestion("sabinus");
+        quizQuestion.setOptions(List.of(option1, option2));
+
+
+        AnswersDto answersDto = new AnswersDto(1l,2l);
+
+        when(optionRepository.findAllById(List.of(answersDto.getAnswersId()))).thenReturn(List.of(option1, option2));
+
+        Assertions.assertThat(questionOptionService.getAllAnsAndQuestion(List.of(answersDto))).isNotNull();
+
+    }
+
+
+    @Test
+    public void OptionServiceLoadOptions(){
+        AnswersDto answersDto = new AnswersDto(1l,1l);
+        QuizQuestion quizQuestion = new QuizQuestion();
+        QuestionOption option1 = new QuestionOption();
+        option1.setId(1l);
+        option1.setValue("janet");
+        option1.setPoint(3);
+        option1.setAnswer(true);
+        option1.setQuestion(quizQuestion);
+
+        quizQuestion.setId(1l);
+        quizQuestion.setQuestion("sabinus");
+        quizQuestion.setOptions(List.of(option1));
+
+        when(optionRepository.findAllById(List.of(answersDto.getAnswersId()))).thenReturn(List.of(option1));
+        Map<Long, QuestionOption> returnMap = questionOptionService.loadOptions(List.of(answersDto));
+
+        Assertions.assertThat(returnMap).isNotNull();
+    }
 }

@@ -13,7 +13,7 @@ public interface QuestionService {
     QuizAppResponse<QuestionDto> getQuestionById(long id);
 
     public QuizAppResponse<Map<String, Object>> getRandom(Pageable pageable);
-    QuizAppResponse<String> save(PostQuestionDto postQuestionDto);
+    QuizAppResponse<String> createQuestion(PostQuestionDto postQuestionDto);
 
     QuizAppResponse<String> updatingQuestion(long id, PostQuestionDto postQuestionDto);
 

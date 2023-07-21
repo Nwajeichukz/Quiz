@@ -84,7 +84,7 @@ public class QuestionController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<QuizAppResponse<String>> create(@Valid @RequestBody PostQuestionDto postQuestionDto){
         return ResponseEntity.ok(
-                questionServiceImpl.save(postQuestionDto)
+                questionServiceImpl.createQuestion(postQuestionDto)
                 );
     }
 

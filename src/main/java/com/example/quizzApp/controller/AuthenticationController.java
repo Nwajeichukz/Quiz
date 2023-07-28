@@ -23,6 +23,12 @@ public class AuthenticationController {
         return "welcome";
     };
 
+
+    @GetMapping("/get-all")
+    public ResponseEntity<QuizAppResponse<?>> getAllUse(){
+        return  ResponseEntity.ok(userService.getAllU());
+    }
+
     @PostMapping("/signup")
     public ResponseEntity<QuizAppResponse<Map<String, Object>>> createUser(@Valid @RequestBody RegisterRequest request){
         return ResponseEntity.ok(userService.createUser(request));

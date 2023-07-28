@@ -12,4 +12,6 @@ public interface UserService {
     QuizAppResponse<Map<String, Object>> createAdmin(RegisterRequest request);
 
     QuizAppResponse<String> login(AuthenticationRequest authenticationRequest);
+
+    QuizAppResponse<?> getAllU();
 }

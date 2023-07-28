@@ -60,6 +60,11 @@ public class UserServiceImpl implements UserService {
         ));
     }
 
+    public QuizAppResponse<?> getAllU(){
+        List<User> user = userRepository.findAll();
+        return new QuizAppResponse<>(0, "User Successfully saved", user);
+    }
+
     public QuizAppResponse<Map<String, Object>> createAdmin(RegisterRequest request) {
         boolean check = userRepository.existsByUsernameOrEmail(request.getUsername(), request.getEmail());
 

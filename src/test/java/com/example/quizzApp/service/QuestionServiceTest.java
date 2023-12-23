@@ -63,8 +63,6 @@ public class QuestionServiceTest {
     }
 
 
-
-
     @Test
     public void QuestionService_GetAllQuestion_ReturnsResponseDto(){
         Pageable pageReq = PageRequest.of(0, 10);

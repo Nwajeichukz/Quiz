@@ -40,7 +40,7 @@ public class QuestionServiceImpl implements QuestionService {
                 "content", quizQuestions.getContent()
         );
 
-        return new QuizAppResponse<>("success", page);
+        return new QuizAppResponse<>("successful", page);
 
     }
 

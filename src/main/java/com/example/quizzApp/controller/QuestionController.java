@@ -80,7 +80,7 @@ public class QuestionController {
     }
 
 
-    @PostMapping("/add")
+    @PostMapping("/add") //create_question
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<QuizAppResponse<String>> create(@Valid @RequestBody PostQuestionDto postQuestionDto){
         return ResponseEntity.ok(

@@ -13,7 +13,6 @@ public class QuestionDto {
 
     private Long id;
 
-
     private String question;
 
     Collection<OptionDto> options;

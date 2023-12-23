@@ -11,6 +11,7 @@ import com.example.quizzApp.repository.UserRepository;
 import com.example.quizzApp.service.JwtService;
 import com.example.quizzApp.service.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -33,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final JwtService jwtService;
 
     private final AuthenticationManager authenticationManager;
+
 
     public QuizAppResponse<Map<String, Object>> createUser(RegisterRequest request) {
         boolean check = userRepository.existsByUsernameOrEmail(request.getUsername(), request.getEmail());
@@ -51,7 +54,6 @@ public class UserServiceImpl implements UserService {
         user.setRoles(roles);
 
         userRepository.save(user);
-
 
         return  new QuizAppResponse<>(0,"User Successfully Saved", Map.of(
                 "id", user.getId(),
@@ -83,6 +85,8 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
+
+
         return new QuizAppResponse<>(0, "Admin Successfully Saved",Map.of(
                 "id", user.getId(),
                 "username", user.getUsername(),
@@ -98,6 +102,7 @@ public class UserServiceImpl implements UserService {
         var user = myUserDetailsService.loadUserByUsername(authenticationRequest.getEmail());
 
         var jwtToken = jwtService.generateToken(user);
+
 
         return  new QuizAppResponse<>(0,"Successfully logged in", jwtToken);
 

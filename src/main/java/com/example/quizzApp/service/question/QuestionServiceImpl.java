@@ -94,6 +94,7 @@ public class QuestionServiceImpl implements QuestionService {
             throw new ApiException("Question options is required");
 
         QuizQuestion quizQuestion = new QuizQuestion();
+
         quizQuestion.setQuestion(postQuestionDto.getQuestion());
 
         quizQuestion.setOptions(

@@ -134,12 +134,6 @@ public class QuestionServiceTest {
         quizQuestion.setQuestion("sabinus");
         quizQuestion.setOptions(List.of(questionOption));
 
-        PostQuestionDto postQuestionDto = PostQuestionDto.builder()
-                .question("sabinus")
-                .answer("janet")
-                .options(List.of("janet", "prof", "super hero"))
-                .point(3)
-                .build();
 
         when(questionRepository.findById(questionId)).thenReturn(Optional.ofNullable(quizQuestion));
 

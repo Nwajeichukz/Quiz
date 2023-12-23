@@ -23,7 +23,6 @@ public class AuthenticationController {
         return "welcome";
     };
 
-
     @GetMapping("/get-all")
     public ResponseEntity<QuizAppResponse<?>> getAllUse(){
         return  ResponseEntity.ok(userService.getAllU());
